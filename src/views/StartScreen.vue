@@ -1,7 +1,5 @@
 <template>
-    <p>スタート画面</p>
-
-    <button @click="play()" class="btn btn-primary">スタート</button>
+    <button @click="play()" class="btn btn-primary btn-lg">スタート</button>
 </template>
 
 <script>

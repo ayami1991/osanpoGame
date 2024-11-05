@@ -39,16 +39,37 @@ export default {
         //日付の初期設定
         const initialDay = flgStart ? 1 : parseInt(localStorage.getItem('day'));
         // 所持金
-        const initialMoney = flgStart ? 10000 : parseInt(localStorage.getItem('money'));
-        
+        let initialMoney = flgStart ? 10000 : parseInt(localStorage.getItem('money'));
+        // 説明
+        let initialDisc = null;
+        if (flgStart) {
+            initialDisc = constants.stories['0'].disc;
+        } else {
+            // `0` を除外したキー配列を取得
+            const storyKeys = Object.keys(constants.stories).filter(key => key !== '0');
+
+            // ランダムなキーを取得
+            const randomKey = storyKeys[Math.floor(Math.random() * storyKeys.length)];
+
+            // ランダムに選ばれたエピソードの `disc` を取得
+            initialDisc = constants.stories[randomKey].disc;
+
+            //遷移元で表示している所持金の計算をする必要がある
+            if(this.$route.query.fromRoute === 'battle'){
+                //バトルページからの遷移では表示されている所持金が当日の物語が反映してない
+                initialMoney = initialMoney + constants.stories[randomKey].amount;
+            }
+        }
+
 
         //日付、所持金、説明文の設定
         return {
             day: initialDay,
             money: initialMoney,
             imageSrc: pigImag,
-            description: constants.stories[initialDay - 1].disc || "今日は特に何もなかった",
-            flgBattle:false// バトルフラグ
+            description: initialDisc,
+            flgBattle: false,// バトルフラグ,
+            battleId: null //バトルid
         };
     },
 
@@ -66,12 +87,34 @@ export default {
             if (this.day === 3 || this.day === 6 || this.day === 10) {
                 // true:バトルフラグon -> バトル説明を設定する
                 this.flgBattle = true;
-                this.description = constants.battleStoryes[0];
+                // バトルIDの設定
+                this.battleId = Math.floor(Math.random() * constants.battleStories.length);
+                const selectedStory = constants.battleStories.find(story => story.id === this.battleId);
+                this.description = selectedStory.disc;
 
 
             } else {
                 // false:1日目以外をランダムで取得
-                this.description = constants.stories[this.day - 1].disc || "今日は特に何もなかった";
+                // `0` を除外したキー配列を取得
+                const storyKeys = Object.keys(constants.stories).filter(key => key !== '0');
+
+                // ランダムなキーを取得
+                const randomKey = storyKeys[Math.floor(Math.random() * storyKeys.length)];
+
+                // ランダムに選ばれたエピソードの `disc` を取得
+                const selectedDisc = constants.stories[randomKey].disc;
+                // 説明の設定
+                this.description = selectedDisc;
+
+                // 所持金の計算
+                if (randomKey === '9') {//todo 識別方法 {全財産失うやつ}
+                    this.money = 0;
+                } else {
+                    this.money = this.money + constants.stories[randomKey].amount;
+                }
+
+                // localstorageへ保存
+                localStorage.setItem('money', this.money);
 
                 // slgStartをfalseにする
                 // this.$router.push({ path: '/going', query: { flgStart: 'false' } });
@@ -85,7 +128,7 @@ export default {
             this.day += 1;
             localStorage.setItem('day', this.day);
             //バトル画面へ遷移する
-            this.$router.push({ path: '/battle' });
+            this.$router.push({ path: '/battle', query: { battleId: this.battleId } });
 
         }
         ,

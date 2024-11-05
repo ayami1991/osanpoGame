@@ -11,14 +11,14 @@ const stories = {
     9: { disc: "財布を丸ごと落とした。所持金をすべて失った", amount: "all" }, // すべて失う場合に特殊値を設定
 };
 
-const battleStoryes={
-    0:"たんぱんこぞうがバトルを仕掛けてきた！",
-    1:"ミニスカートのおねえさんがバトルを仕掛けてきた！",
-    2:"ジェントルマンがバトルを仕掛けてきた！",
-}
+const battleStories = [
+    { id: 0, disc: "たんぱんこぞうがバトルを仕掛けてきた！", money: 3000 },
+    { id: 1, disc: "ミニスカートのおねえさんがバトルを仕掛けてきた！", money: 5000 },
+    { id: 2, disc: "ジェントルマンがバトルを仕掛けてきた！", money: 8000 },
+]
 
-const constants ={
-    stories,battleStoryes
+const constants = {
+    stories, battleStories
 }
 
 export default constants;
