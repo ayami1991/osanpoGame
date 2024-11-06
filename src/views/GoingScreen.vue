@@ -4,7 +4,7 @@
         <Status :day="day" :money="money" />
 
         <!-- 画像を真ん中に配置 -->
-        <img :src="imageSrc" alt="画像" class="main-image" />
+        <img :src="currentImage" alt="歩くぶたさん" class="main-image" />
 
         <!-- 説明部分 -->
         <Description :day="day" :description="description" />
@@ -21,7 +21,10 @@
 <script>
 import Description from '@/components/Description.vue';
 import Status from '@/components/Status.vue';
-import pigImag from '@/assets/ぶたさん.png'
+import pigImag from '@/assets/going_1.png'
+import goingImag_1 from '@/assets/going_1.png'
+import goingImag_2 from '@/assets/going_2.png'
+import goingImag_3 from '@/assets/going_3.png'
 import constants from '@/const/constants'
 import { watch } from 'vue';
 
@@ -55,9 +58,14 @@ export default {
             initialDisc = constants.stories[randomKey].disc;
 
             //遷移元で表示している所持金の計算をする必要がある
-            if(this.$route.query.fromRoute === 'battle'){
+            if (this.$route.query.fromRoute === 'battle') {
                 //バトルページからの遷移では表示されている所持金が当日の物語が反映してない
-                initialMoney = initialMoney + constants.stories[randomKey].amount;
+                // 所持金の計算
+                if (randomKey === '9') {//todo 識別方法 {全財産失うやつ}
+                    initialMoney = 0;
+                } else {
+                    initialMoney = initialMoney + constants.stories[randomKey].amount;
+                }
             }
         }
 
@@ -67,10 +75,32 @@ export default {
             day: initialDay,
             money: initialMoney,
             imageSrc: pigImag,
+            images: [goingImag_1, goingImag_2, goingImag_3],
+            currentImgIndex: 0,//表示画像インデックス
+            intervalId: null,
             description: initialDisc,
             flgBattle: false,// バトルフラグ,
-            battleId: null //バトルid
+            battleId: null, //バトルid
         };
+    },
+
+    computed: {
+        //現在の画像を取得
+        currentImage() {
+            return this.images[this.currentImgIndex];
+        },
+    },
+
+    created() {
+        //setIntervalで一定期間ごとに画像を切り替える
+        this.intervalId = setInterval(() => {
+            this.currentImgIndex = (this.currentImgIndex + 1) % this.images.length;
+        }, 300);//200ミリ秒ごとに画像を切り替え
+    },
+
+    beforeDestroy() {
+        //コンポーネントが破棄される前にintarvavlをクリア
+        clearInterval(this.intervalId);
     },
 
     methods: {
@@ -93,6 +123,11 @@ export default {
                 this.description = selectedStory.disc;
 
 
+            } else if (this.day === 12) {
+                // 12日目（ラスト）
+                //結果画面へ遷移
+                this.$router.push({ path: '/battleResult', query: { hoge: '' } });
+
             } else {
                 // false:1日目以外をランダムで取得
                 // `0` を除外したキー配列を取得
@@ -111,6 +146,11 @@ export default {
                     this.money = 0;
                 } else {
                     this.money = this.money + constants.stories[randomKey].amount;
+                }
+
+                //所持金0円チェック
+                if(this.money < 0){
+                    this.money = 0;
                 }
 
                 // localstorageへ保存
@@ -151,7 +191,7 @@ export default {
 }
 
 .main-image {
-    width: 200px;
+    width: 300px;
     height: auto;
     margin: 20px 0;
 }

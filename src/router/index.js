@@ -2,14 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router';
 import StartScreen from '../views/StartScreen.vue';
 import GoingScreen from '../views/GoingScreen.vue';
 import BattleScreen from '@/views/BattleScreen.vue';
-import BattleResultScreen from '@/views/BattleResultScreen.vue';
+import ResultScreen from '@/views/ResultScreen.vue';
 
 //ルート(ページ)を定義
 const routes = [
     { path: '/', component: StartScreen },//表示するコンポーネントの設定
     { path: '/going', component: GoingScreen },
     { path: '/battle', component: BattleScreen },
-    { path: '/battleResult', component: BattleResultScreen },
+    { path: '/battleResult', component: ResultScreen },
 ];
 
 
