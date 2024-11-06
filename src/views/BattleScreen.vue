@@ -1,18 +1,18 @@
 <template>
-    <div>
-        <p>所持金:{{ money }}円</p>
-        <img :src="battleImage" alt="バトル画像" />
-        <div v-if="result == null">
-            <img src="@/assets/gu.png" alt="グー" @click="onBattleClick('0')" class="janken-image"/>
-            <img src="@/assets/choki.png" alt="チョキ" @click="onBattleClick('0')" class="janken-image"/>
-            <img src="@/assets/pa.png" alt="パー" @click="onBattleClick('0')" class="janken-image"/>
+    <div class="battle-container">
+        <p class="money-display">所持金:{{ money }}円</p>
+        <img :src="battleImage" alt="バトル画像" class="battle-image" />
+        <div v-if="result == null" class="janken-container">
+            <img src="@/assets/gu.png" alt="グー" @click="onBattleClick('0')" class="janken-image" />
+            <img src="@/assets/choki.png" alt="チョキ" @click="onBattleClick('0')" class="janken-image" />
+            <img src="@/assets/pa.png" alt="パー" @click="onBattleClick('0')" class="janken-image" />
         </div>
-        <div>
+        <div class="result-container">
             <p v-if="result">結果：{{ result }}</p>
             <p v-if="result == '勝ち'">{{ tempMoney }}円ゲットだぜ！</p>
             <p v-if="result == '負け'">{{ tempMoney }}円失った</p>
         </div>
-        <button @click="onNextDayClick()">次の日へ</button>
+        <button @click="onNextDayClick()" class="btn btn-primary next-day-button">次の日へ</button>
     </div>
 </template>
 
@@ -71,6 +71,9 @@ export default {
                 result = '負け'
                 // 負ければ所持金マイナス
                 amountedMoney = amountedMoney - selectedStory.money;
+                if (amountedMoney <= 0) {
+                    amountedMoney = 0;
+                }
             }
             console.log(result);
 
@@ -91,13 +94,83 @@ export default {
 }
 </script>
 
-<style>
-.janken-image {
-    width: 100px;
-    height: 100px;
-    margin: 10px;
-    border: 3px solid black; /* 枠線の色と太さ */
-    border-radius: 8px; /* 枠線の角を丸くする（必要に応じて） */
+<style scoped>
+.battle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffe4e1;
+    /* パステルピンクの背景 */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    /* 影を追加 */
+    max-width: 400px;
+    margin: 0 auto;
 }
 
+.money-display {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ff69b4;
+    /* 明るいピンクの文字色 */
+    margin-bottom: 15px;
+}
+
+.battle-image {
+    width: 180px;
+    height: auto;
+    border: 3px solid #ffb6c1;
+    /* ピンクの枠線 */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    /* 画像に影を追加 */
+    margin-bottom: 20px;
+}
+
+.janken-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    /* じゃんけん画像の間隔 */
+    margin: 20px 0;
+}
+
+.janken-image {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border: 2px solid #ffb6c1;
+    border-radius: 8px;
+    /* 軽く角を丸める */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+}
+
+.janken-image:hover {
+    transform: scale(1.1);
+    /* 画像にホバースケールを追加 */
+}
+
+.result-container {
+    text-align: center;
+    color: #ff69b4;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.next-day-button {
+    width: 200px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-radius: 30px;
+    padding: 10px 20px;
+    background-color: #87cefa !important;
+    /* 柔らかい青 */
+    border-color: #87cefa !important;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    /* ボタンに影を追加 */
+    color: white;
+    margin-top: 20px;
+}
 </style>

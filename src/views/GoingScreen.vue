@@ -9,10 +9,10 @@
         <!-- 説明部分 -->
         <Description :day="day" :description="description" />
 
-        <button v-if="flgBattle" @click="nextBattle()">バトル！</button>
-        <button v-else @click="nextDay()">次の日</button>
+        <button v-if="flgBattle" @click="nextBattle()" class="btn btn-danger custom-button">バトル！</button>
+        <button v-else @click="nextDay()" class="btn btn-primary custom-button">次の日</button>
 
-        <button @click="restart()">やりなおす</button>
+        <button @click="restart()" class="btn btn-secondary custom-button">やりなおす</button>
     </div>
 
 </template>
@@ -125,8 +125,10 @@ export default {
 
             } else if (this.day === 12) {
                 // 12日目（ラスト）
+                // localstorageへ保存
+                localStorage.setItem('money', this.money);
                 //結果画面へ遷移
-                this.$router.push({ path: '/battleResult', query: { hoge: '' } });
+                this.$router.push({ path: '/battleResult' });
 
             } else {
                 // false:1日目以外をランダムで取得
@@ -149,7 +151,7 @@ export default {
                 }
 
                 //所持金0円チェック
-                if(this.money < 0){
+                if (this.money <= 0) {
                     this.money = 0;
                 }
 
@@ -188,6 +190,56 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #ffe4e1;
+    /* パステルピンクで背景色を柔らかく */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    /* 影を付けて立体感を */
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.main-image {
+    width: 150px;
+    height: auto;
+    border-radius: 50%;
+    /* 画像を丸く */
+    border: 4px solid #ffb6c1;
+    /* 明るいピンクの枠線 */
+    margin: 20px 0;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    /* 画像にも少し影を追加 */
+}
+
+.custom-button {
+    width: 200px;
+    margin: 10px 0;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 30px;
+    /* ボタンの角を丸くしてかわいく */
+    padding: 10px 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    /* ボタンにも影を追加 */
+}
+
+.custom-button.btn-danger {
+    background-color: #ff7f7f;
+    /* 柔らかい赤 */
+    border-color: #ff7f7f;
+}
+
+.custom-button.btn-primary {
+    background-color: #87cefa;
+    /* 柔らかい青 */
+    border-color: #87cefa;
+}
+
+.custom-button.btn-secondary {
+    background-color: #ffc0cb;
+    /* 柔らかいピンク */
+    border-color: #ffc0cb;
 }
 
 .main-image {
