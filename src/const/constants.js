@@ -13,7 +13,7 @@ const stories = {
 
 const battleStories = [
     { id: 0, disc: "たんぱんこぞうがバトルを仕掛けてきた！", money: 3000 },
-    { id: 1, disc: "ミニスカートのおねえさんがバトルを仕掛けてきた！", money: 5000 },
+    { id: 1, disc: "やまおとこがバトルを仕掛けてきた！", money: 5000 },
     { id: 2, disc: "ジェントルマンがバトルを仕掛けてきた！", money: 8000 },
 ]
 
